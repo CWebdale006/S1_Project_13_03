@@ -90,6 +90,31 @@ function init() {
 
       // Set the value of downClue to reference the element with the id "down". 
       downClue = document.getElementById(downID);
+
+      // Colors the corssword puzzle's first letter by calling the formatPuzzle() function using currnetLetter as the parameter value 
+      formatPuzzle(currentLetter);
+
+      // Loops through the items in the allLetters object collection 
+      for (var i = 0; i < allLetters.length; i++) {
+            // Changes the cursor style to pointer
+            allLetters[i].style.cursor = "pointer";
+
+            // Adds "onmousedown" event handler that runs an anonymous function calling the formatPuzzle() function 
+            allLetters[i].addEventListener("onmousedown", function () {
+                  // i dont think this is right 
+                  formatPuzzle(allLetters[i]);
+            });
+      }
+
+      // Runs the selectLetter() function in response to the "keydown" event occuring within the document. 
+      document.addEventListener("keydown", selectLetter);
+
+      // Declares a variable referencing an element with the ID "directionImg"
+      var typeImage = document.getElementById("directionImg");
+
+      // Changes the cursor style of typeImage to "pointer"
+      typeImage.style.cursor = "pointer";
+
 }
 
 // Formats the colors of the crossword table cells and clues 
@@ -108,8 +133,8 @@ function formatPuzzle(puzzleLetter) {
 
       // Tests whether there is an across clue for the current letter
       if (currentLetter.dataset.clueA != undefined) {
-            // Sets acrossClue to reference the element with the ID value "currentLetter.dataset.cluaA" 
-            acrossClue = document.getElementById(currentLetter.dataset.clueA);
+            // Sets acrossClue to reference the element with the ID value "currentLetter.dataset.clueA" 
+            acrossClue = document.getElementById("currentLetter.dataset.clueA");
 
             // Changes the color style fo acrossClue to blue 
             acrossClue.style.color = "blue";
@@ -143,10 +168,75 @@ function formatPuzzle(puzzleLetter) {
       }
 }
 
+// Selects puzzle cells using the keyboard 
+function selectLetter(target) {
+      // Declares variables and sets their values to reference letters to the left, above, right of, and below current selected letters. 
+      var leftLetter = currentLetter.dataset.left;
+      var upLetter = currentLetter.dataset.up;
+      var rightLetter = currentLetter.dataset.right;
+      var downLetter = currentLetter.dataset.down;
 
+      // Stores the code of the key pressed by the user 
+      // w r o n g 
+      var userKey = target.keyCode;
 
-formatPuzzle();
+      // Determines what to do based on which key was pressed 
+      if (userKey === 37) {
+            // Calls the formatPuzzle() function using leftLetter as the parameter value 
+            formatPuzzle(leftLetter);
+      } else if (userKey === 38) {
+            // Calls the formatPuzzle() with the upLetter variable. 
+            formatPuzzle(upLetter);
+      } else if (userKey === 39 || userKey === 9) {
+            // Calls the formatPuzzle() with the rightLetter variable
+            formatPuzzle(rightLetter);
+      } else if (userKey === 40 || userKey === 13) {
+            // Calls the formatPuzzle() with the downLetter variable 
+            formatPuzzle(downLetter);
+      } else if (userKey === 8 || userKey === 46) {
+            // Deletes the text content of currentLetter; 
+            currentLetter.innerHTML = "";
+      } else if (userKey === 32) {
+            // Runs the switchTypeDirection() function to change the typing direction
+            switchTypeDirection();
+      } else if (userKey >= 65 && userKey <= 90) {
+            // Writes the character pressed into the cell 
+            currentLetter.innerHTML = getChar(userKey);
 
+            // If typeDirection is "right", move to the next cell by calling the formatPuzzle() with the rightLetter variable. Otherwise goes to the next cell by calling the formatPuzzle() variable with the downLetter variable 
+            if (typeDirection == "right") {
+                  formatPuzzle(rightLetter);
+            } else {
+                  formatPuzzle(downLetter);
+            }
+      }
+
+      // Prevents the browser from performing the default action in response to the keyboard event. 
+      target.preventDefault();
+}
+
+// Toggles the typing direction between right and down. 
+function switchTypeDirection() {
+      // Declares the variable "typeImage" that points to the element with the ID "directionImg". 
+      var typeImage = document.getElementById("directionImg");
+
+      // Tests the value of the typeDirection variable 
+      if (typeDirection = "right") {
+            // Changes typeDirection to "down" 
+            typeDirection = "down";
+            // Changes the src attribute of typeImage 
+            typeImage.src = "pc_right.png";
+            // Changes the background color of currentLetter to a red color 
+            currentLetter.style.backgroundColor = "rgb(255, 191, 191)";
+      } else {
+            // Changes typeDirection to "right"
+            typeDirection = "right";
+            // Changes the src attribute of typeImage 
+            typeImage.src = "pc_down.png";
+            // Changes the background color of currentLetter 
+            currentLetter.style.backgroundColor = "rgb(191, 191, 255)";
+      }
+}
 
 
 
