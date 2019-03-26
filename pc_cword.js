@@ -91,7 +91,7 @@ function init() {
       // Set the value of downClue to reference the element with the id "down". 
       downClue = document.getElementById(downID);
 
-      // Colors the corssword puzzle's first letter by calling the formatPuzzle() function using currnetLetter as the parameter value 
+      // Colors the corssword puzzle's first letter by calling the formatPuzzle() function using currentLetter as the parameter value 
       formatPuzzle(currentLetter);
 
       // Loops through the items in the allLetters object collection 
@@ -115,15 +115,44 @@ function init() {
       // Changes the cursor style of typeImage to "pointer"
       typeImage.style.cursor = "pointer";
 
+      // Runs the switchTypeDirection() function when the typeImage is clicked 
+      document.getElementById("directionImg").addEventListener("click", switchTypeDirection);
+
+      // Adds an "click" event handler to the init() function that runs commands when the Show Errors button is clicked. 
+      document.getElementById("showErrors").addEventListener("click", function () {
+            for (var i = 0; i < allLetters.length; i++) {
+                  // If the text content of an item does not match the value of the letter's dataset.letter property, the text color is set to red. 
+                  if (currentLetter.innerText != currentLetter.dataset.letter) {
+                        currentLetter.style.color = "red";
+                  }
+            }
+
+            // After a 3 second interval, the color style for all items in the allLetters collection is set to an empty text string. 
+            setTimeout(
+                  function () {
+                        for (var i = 0; i < allLetters.length; i++) {
+                              allLetters[i].style.color = "";
+                        }
+                  }, 3000);
+      });
+
+      // Adds an click event handler to the Show Solution button. 
+      document.getElementById("showSolution").addEventListener("click", function () {
+            // Goes through all items in the allLetters collection
+            for (var i = 0; i < allLetters.length; i++) {
+                  // Sets the text content of each item to the value of the letter's dataset.letter property. 
+                  allLetters[i].innerHTML = allLetters[i].dataset.letter;
+            }
+      });
 }
 
 // Formats the colors of the crossword table cells and clues 
 function formatPuzzle(puzzleLetter) {
       // Changes the value of currentLetter to puzzleLetter. 
-      currentLetter = puzzleLetter;
+      currentLetter.value = puzzleLetter;
 
       // Removes the current colors in the puzzle by looping through all items in the allLetters object collection, changing the background color of each. 
-      for (let i = 0; i < allLetters.length; i++) {
+      for (var i = 0; i < allLetters.length; i++) {
             allLetters[i].style.backgroundColor = "";
       }
 
@@ -134,17 +163,17 @@ function formatPuzzle(puzzleLetter) {
       // Tests whether there is an across clue for the current letter
       if (currentLetter.dataset.clueA != undefined) {
             // Sets acrossClue to reference the element with the ID value "currentLetter.dataset.clueA" 
-            acrossClue = document.getElementById("currentLetter.dataset.clueA");
+            acrossClue = document.getElementById(currentLetter.dataset.clueA);
 
-            // Changes the color style fo acrossClue to blue 
+            // Changes the color style for acrossClue to blue 
             acrossClue.style.color = "blue";
 
             // Sets wordLetters to reference all elements selected by a CSS selector using a variable 
             //wrong
-            wordLetters = document.querySelectorAll("data-clue-A currentLetter.dataset.clueA");
+            wordLetters = document.querySelectorAll("[data-clue-A= acrossClue]");
 
             // Changes the background-color style of every item in wordLetters to a light blue color 
-            for (let i = 0; i < wordLetters.length; i++) {
+            for (var i = 0; i < wordLetters.length; i++) {
                   wordLetters[i].style.backgroundColor = "rgb(231,231,255)";
             }
       }
@@ -162,9 +191,16 @@ function formatPuzzle(puzzleLetter) {
             wordLetters = document.querySelectorAll("data-clue-D currentLetter.dataset.clueD");
 
             // Changes the background-color style of every item in wordLetters to a light red color 
-            for (let i = 0; i < wordLetters.length; i++) {
+            for (var i = 0; i < wordLetters.length; i++) {
                   wordLetters[i].style.backgroundColor = "rgb(255, 231,231)";
             }
+      }
+
+      // Indicates the typing direction for the current letter by changing the color depending on the value of typeDirection 
+      if (typeDirection === "right") {
+            currentLetter.style = "rgb(191,191,255)";
+      } else {
+            currentLetter.style = "rgb(255, 191, 191)";
       }
 }
 
@@ -177,7 +213,6 @@ function selectLetter(target) {
       var downLetter = currentLetter.dataset.down;
 
       // Stores the code of the key pressed by the user 
-      // w r o n g 
       var userKey = target.keyCode;
 
       // Determines what to do based on which key was pressed 
@@ -234,7 +269,7 @@ function switchTypeDirection() {
             // Changes the src attribute of typeImage 
             typeImage.src = "pc_down.png";
             // Changes the background color of currentLetter 
-            currentLetter.style.backgroundColor = "rgb(191, 191, 255)";
+            currentLetter.style.backgroundColor = "black";
       }
 }
 
