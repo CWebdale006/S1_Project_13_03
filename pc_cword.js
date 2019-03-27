@@ -100,10 +100,8 @@ function init() {
             allLetters[i].style.cursor = "pointer";
 
             // Adds "onmousedown" event handler that runs an anonymous function calling the formatPuzzle() function 
-            allLetters[i].addEventListener("mousedown", function () {
-                  // i dont think this is right 
-                  // it's definately not right 
-                  formatPuzzle();
+            allLetters[i].addEventListener("onmousedown", function (e) {
+                  formatPuzzle(e.target);
             });
       }
 
@@ -121,11 +119,11 @@ function init() {
       typeImage.addEventListener("click", switchTypeDirection);
 
       // Adds a "click" event handler to the init() function that runs commands when the Show Errors button is clicked. 
-      document.getElementById("showErrors").addEventListener("click", function () {
+      document.getElementById("showErrors").onclick = function () {
             for (var i = 0; i < allLetters.length; i++) {
                   // If the text content of an item does not match the value of the letter's dataset.letter property, the text color is set to red. 
-                  if (currentLetter.innerText != currentLetter.dataset.letter) {
-                        currentLetter.style.color = "red";
+                  if (currentLetter[i].textContent != currentLetter[i].dataset.letter) {
+                        currentLetter[i].style.color = "red";
                   }
             }
 
@@ -137,25 +135,27 @@ function init() {
                         }
                   }, 3000);
 
-      });
+      };
 
       // Adds an click event handler to the Show Solution button. 
-      document.getElementById("showSolution").addEventListener("click", function () {
+      document.getElementById("showSolution").onclick = function () {
             // Goes through all items in the allLetters collection
             for (var i = 0; i < allLetters.length; i++) {
-                  // Changes to default color 
-                  allLetters[i].style.color = "";
+                  if (allLetters[i].textContent != allLetters[i].dataset.letter) {
+                        // Changes to default color 
+                        allLetters[i].style.color = "";
 
-                  // Sets the text content of each item to the value of the letter's dataset.letter property. 
-                  allLetters[i].innerHTML = allLetters[i].dataset.letter;
+                        // Sets the text content of each item to the value of the letter's dataset.letter property. 
+                        allLetters[i].textContent = allLetters[i].dataset.letter;
+                  }
             }
-      });
+      };
 }
 
 // Formats the colors of the crossword table cells and clues 
 function formatPuzzle(puzzleLetter) {
       // Changes the value of currentLetter to puzzleLetter. 
-      currentLetter.value = puzzleLetter;
+      currentLetter = puzzleLetter;
 
       // Removes the current colors in the puzzle by looping through all items in the allLetters object collection, changing the background color of each. 
       for (var i = 0; i < allLetters.length; i++) {
@@ -163,8 +163,8 @@ function formatPuzzle(puzzleLetter) {
       }
 
       // Removes the highlighting of the current clues 
-      acrossClue.style.color = "";
-      downClue.style.color = "";
+      acrossClue.style.color = "rgb(96, 96, 28)";
+      downClue.style.color = "rgb(96, 96, 28)";
 
       // Tests whether there is an across clue for the current letter
       if (currentLetter.dataset.clueA != undefined) {
@@ -175,7 +175,7 @@ function formatPuzzle(puzzleLetter) {
             acrossClue.style.color = "blue";
 
             // Sets wordLetters to reference all elements selected by a CSS selector using a variable 
-            wordLetters = document.querySelectorAll("[data-clue-A=acrossClue]");
+            wordLetters = document.querySelectorAll("[data-clue-A=" + currentLetter.getAttribute("data-clue-a") + "]");
 
             // Changes the background-color style of every item in wordLetters to a light blue color 
             for (var i = 0; i < wordLetters.length; i++) {
@@ -192,7 +192,7 @@ function formatPuzzle(puzzleLetter) {
             downClue.style.color = "red";
 
             // Sets wordLetters to reference all elements selected by a CSS selector using a variable 
-            wordLetters = document.querySelectorAll("[data-clue-D=downClue]");
+            wordLetters = document.querySelectorAll("[data-clue-D=" + currentLetter.getAttribute("data-clue-d") + "]");
 
             // Changes the background-color style of every item in wordLetters to a light red color 
             for (var i = 0; i < wordLetters.length; i++) {
@@ -212,13 +212,13 @@ function formatPuzzle(puzzleLetter) {
 // Selects puzzle cells using the keyboard 
 function selectLetter(target) {
       // Declares variables and sets their values to reference letters to the left, above, right of, and below current selected letters. 
-      var leftLetter = currentLetter.dataset.left;
-      var upLetter = currentLetter.dataset.up;
-      var rightLetter = currentLetter.dataset.right;
-      var downLetter = currentLetter.dataset.down;
+      var leftLetter = document.getElementById(currentLetter.dataset.left);
+      var upLetter = document.getElementById(currentLetter.dataset.up);
+      var rightLetter = document.getElementById(currentLetter.dataset.right);
+      var downLetter = document.getElementById(currentLetter.dataset.down);
 
       // Stores the code of the key pressed by the user 
-      var userKey = target.keyCode;
+      var userKey = event.keyCode;
 
       // Determines what to do based on which key was pressed 
       if (userKey === 37) {
@@ -235,7 +235,7 @@ function selectLetter(target) {
             formatPuzzle(downLetter);
       } else if (userKey === 8 || userKey === 46) {
             // Deletes the text content of currentLetter; 
-            currentLetter.innerHTML = "";
+            currentLetter.textContent = "";
       } else if (userKey === 32) {
             // Runs the switchTypeDirection() function to change the typing direction
             switchTypeDirection();
@@ -244,7 +244,7 @@ function selectLetter(target) {
             currentLetter.innerHTML = getChar(userKey);
 
             // If typeDirection is "right", move to the next cell by calling the formatPuzzle() with the rightLetter variable. Otherwise goes to the next cell by calling the formatPuzzle() variable with the downLetter variable 
-            if (typeDirection == "right") {
+            if (typeDirection === "right") {
                   formatPuzzle(rightLetter);
             } else {
                   formatPuzzle(downLetter);
