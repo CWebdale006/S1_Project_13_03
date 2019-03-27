@@ -103,7 +103,7 @@ function init() {
             allLetters[i].addEventListener("mousedown", function () {
                   // i dont think this is right 
                   // it's definately not right 
-                  formatPuzzle(MouseEvent.target);
+                  formatPuzzle();
             });
       }
 
@@ -136,6 +136,7 @@ function init() {
                               allLetters[i].style.color = "";
                         }
                   }, 3000);
+
       });
 
       // Adds an click event handler to the Show Solution button. 
@@ -187,8 +188,8 @@ function formatPuzzle(puzzleLetter) {
             // Sets downClue to reference the element with the ID value "currentLetter.dataset.clueD" 
             downClue = document.getElementById(currentLetter.dataset.clueD);
 
-            // Changes the color style fo downClue to red 
-            acrossClue.style.color = "blue";
+            // Changes the color style of downClue to red 
+            downClue.style.color = "red";
 
             // Sets wordLetters to reference all elements selected by a CSS selector using a variable 
             wordLetters = document.querySelectorAll("[data-clue-D=downClue]");
@@ -197,6 +198,7 @@ function formatPuzzle(puzzleLetter) {
             for (var i = 0; i < wordLetters.length; i++) {
                   wordLetters[i].style.backgroundColor = "rgb(255, 231,231)";
             }
+
       }
 
       // Indicates the typing direction for the current letter by changing the color depending on the value of typeDirection 
