@@ -91,7 +91,7 @@ function init() {
       // Set the value of downClue to reference the element with the id "down". 
       downClue = document.getElementById(downID);
 
-      // Colors the corssword puzzle's first letter by calling the formatPuzzle() function using currentLetter as the parameter value 
+      // Colors the crossword puzzle's first letter by calling the formatPuzzle() function using currentLetter as the parameter value 
       formatPuzzle(currentLetter);
 
       // Loops through the items in the allLetters object collection 
@@ -100,11 +100,13 @@ function init() {
             allLetters[i].style.cursor = "pointer";
 
             // Adds "onmousedown" event handler that runs an anonymous function calling the formatPuzzle() function 
-            allLetters[i].addEventListener("onmousedown", function () {
+            allLetters[i].addEventListener("mousedown", function () {
                   // i dont think this is right 
-                  formatPuzzle(allLetters[i]);
+                  // it's definately not right 
+                  formatPuzzle(MouseEvent.target);
             });
       }
+
 
       // Runs the selectLetter() function in response to the "keydown" event occuring within the document. 
       document.addEventListener("keydown", selectLetter);
@@ -116,9 +118,9 @@ function init() {
       typeImage.style.cursor = "pointer";
 
       // Runs the switchTypeDirection() function when the typeImage is clicked 
-      document.getElementById("directionImg").addEventListener("click", switchTypeDirection);
+      typeImage.addEventListener("click", switchTypeDirection);
 
-      // Adds an "click" event handler to the init() function that runs commands when the Show Errors button is clicked. 
+      // Adds a "click" event handler to the init() function that runs commands when the Show Errors button is clicked. 
       document.getElementById("showErrors").addEventListener("click", function () {
             for (var i = 0; i < allLetters.length; i++) {
                   // If the text content of an item does not match the value of the letter's dataset.letter property, the text color is set to red. 
@@ -140,6 +142,9 @@ function init() {
       document.getElementById("showSolution").addEventListener("click", function () {
             // Goes through all items in the allLetters collection
             for (var i = 0; i < allLetters.length; i++) {
+                  // Changes to default color 
+                  allLetters[i].style.color = "";
+
                   // Sets the text content of each item to the value of the letter's dataset.letter property. 
                   allLetters[i].innerHTML = allLetters[i].dataset.letter;
             }
@@ -169,8 +174,7 @@ function formatPuzzle(puzzleLetter) {
             acrossClue.style.color = "blue";
 
             // Sets wordLetters to reference all elements selected by a CSS selector using a variable 
-            //wrong
-            wordLetters = document.querySelectorAll("[data-clue-A= acrossClue]");
+            wordLetters = document.querySelectorAll("[data-clue-A=acrossClue]");
 
             // Changes the background-color style of every item in wordLetters to a light blue color 
             for (var i = 0; i < wordLetters.length; i++) {
@@ -187,8 +191,7 @@ function formatPuzzle(puzzleLetter) {
             acrossClue.style.color = "blue";
 
             // Sets wordLetters to reference all elements selected by a CSS selector using a variable 
-            //wrong
-            wordLetters = document.querySelectorAll("data-clue-D currentLetter.dataset.clueD");
+            wordLetters = document.querySelectorAll("[data-clue-D=downClue]");
 
             // Changes the background-color style of every item in wordLetters to a light red color 
             for (var i = 0; i < wordLetters.length; i++) {
@@ -198,9 +201,9 @@ function formatPuzzle(puzzleLetter) {
 
       // Indicates the typing direction for the current letter by changing the color depending on the value of typeDirection 
       if (typeDirection === "right") {
-            currentLetter.style = "rgb(191,191,255)";
+            currentLetter.style.color = "rgb(191,191,255)";
       } else {
-            currentLetter.style = "rgb(255, 191, 191)";
+            currentLetter.style.color = "rgb(255, 191, 191)";
       }
 }
 
@@ -256,7 +259,7 @@ function switchTypeDirection() {
       var typeImage = document.getElementById("directionImg");
 
       // Tests the value of the typeDirection variable 
-      if (typeDirection = "right") {
+      if (typeDirection === "right") {
             // Changes typeDirection to "down" 
             typeDirection = "down";
             // Changes the src attribute of typeImage 
@@ -269,7 +272,7 @@ function switchTypeDirection() {
             // Changes the src attribute of typeImage 
             typeImage.src = "pc_down.png";
             // Changes the background color of currentLetter 
-            currentLetter.style.backgroundColor = "black";
+            currentLetter.style.backgroundColor = "rgb(191, 191, 255)";
       }
 }
 
