@@ -100,9 +100,9 @@ function init() {
             allLetters[i].style.cursor = "pointer";
 
             // Adds "onmousedown" event handler that runs an anonymous function calling the formatPuzzle() function 
-            allLetters[i].addEventListener("onmousedown", function (e) {
+            allLetters[i].onmousedown = function (e) {
                   formatPuzzle(e.target);
-            });
+            }
       }
 
 
@@ -122,8 +122,8 @@ function init() {
       document.getElementById("showErrors").onclick = function () {
             for (var i = 0; i < allLetters.length; i++) {
                   // If the text content of an item does not match the value of the letter's dataset.letter property, the text color is set to red. 
-                  if (currentLetter[i].textContent != currentLetter[i].dataset.letter) {
-                        currentLetter[i].style.color = "red";
+                  if (allLetters[i].textContent != allLetters[i].dataset.letter) {
+                        allLetters[i].style.color = "red";
                   }
             }
 
@@ -175,11 +175,11 @@ function formatPuzzle(puzzleLetter) {
             acrossClue.style.color = "blue";
 
             // Sets wordLetters to reference all elements selected by a CSS selector using a variable 
-            wordLetters = document.querySelectorAll("[data-clue-A=" + currentLetter.getAttribute("data-clue-a") + "]");
+            wordLetters = document.querySelectorAll("[data-clue-a=" + currentLetter.getAttribute("data-clue-a") + "]");
 
             // Changes the background-color style of every item in wordLetters to a light blue color 
             for (var i = 0; i < wordLetters.length; i++) {
-                  wordLetters[i].style.backgroundColor = "rgb(231,231,255)";
+                  wordLetters[i].style.backgroundColor = "rgb(231, 231, 255)";
             }
       }
 
@@ -192,25 +192,25 @@ function formatPuzzle(puzzleLetter) {
             downClue.style.color = "red";
 
             // Sets wordLetters to reference all elements selected by a CSS selector using a variable 
-            wordLetters = document.querySelectorAll("[data-clue-D=" + currentLetter.getAttribute("data-clue-d") + "]");
+            wordLetters = document.querySelectorAll("[data-clue-d=" + currentLetter.getAttribute("data-clue-d") + "]");
 
             // Changes the background-color style of every item in wordLetters to a light red color 
             for (var i = 0; i < wordLetters.length; i++) {
-                  wordLetters[i].style.backgroundColor = "rgb(255, 231,231)";
+                  wordLetters[i].style.backgroundColor = "rgb(255, 231, 231)";
             }
 
       }
 
       // Indicates the typing direction for the current letter by changing the color depending on the value of typeDirection 
       if (typeDirection === "right") {
-            currentLetter.style.color = "rgb(191,191,255)";
+            currentLetter.style.color = "rgb(191, 191, 255)";
       } else {
             currentLetter.style.color = "rgb(255, 191, 191)";
       }
 }
 
 // Selects puzzle cells using the keyboard 
-function selectLetter(target) {
+function selectLetter(e) {
       // Declares variables and sets their values to reference letters to the left, above, right of, and below current selected letters. 
       var leftLetter = document.getElementById(currentLetter.dataset.left);
       var upLetter = document.getElementById(currentLetter.dataset.up);
@@ -218,7 +218,7 @@ function selectLetter(target) {
       var downLetter = document.getElementById(currentLetter.dataset.down);
 
       // Stores the code of the key pressed by the user 
-      var userKey = event.keyCode;
+      var userKey = e.keyCode;
 
       // Determines what to do based on which key was pressed 
       if (userKey === 37) {
@@ -241,9 +241,10 @@ function selectLetter(target) {
             switchTypeDirection();
       } else if (userKey >= 65 && userKey <= 90) {
             // Writes the character pressed into the cell 
-            currentLetter.innerHTML = getChar(userKey);
+            currentLetter.textContent = getChar(userKey);
 
             // If typeDirection is "right", move to the next cell by calling the formatPuzzle() with the rightLetter variable. Otherwise goes to the next cell by calling the formatPuzzle() variable with the downLetter variable 
+
             if (typeDirection === "right") {
                   formatPuzzle(rightLetter);
             } else {
@@ -252,7 +253,7 @@ function selectLetter(target) {
       }
 
       // Prevents the browser from performing the default action in response to the keyboard event. 
-      target.preventDefault();
+      e.preventDefault();
 }
 
 // Toggles the typing direction between right and down. 
